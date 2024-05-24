@@ -1,28 +1,30 @@
 package com.example.chapter_5.view
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.chapter_5.R
-import com.example.chapter_5.api.ApiClient
 import com.example.chapter_5.databinding.FragmentHomeBinding
 import com.example.chapter_5.model.MovieAdapter
-import com.example.chapter_5.model.response.MovieResponse
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import com.example.chapter_5.viewmodel.MovieViewModel
+import com.example.chapter_5.viewmodel.MovieViewModelFactory
 
 class HomeFragment : Fragment() {
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
 
+
     private lateinit var movieAdapter: MovieAdapter
+    private val viewModel: MovieViewModel by viewModels {
+        MovieViewModelFactory.getInstance(requireContext())
+    }
     private lateinit var recyclerView: RecyclerView
 
     override fun onCreateView(
@@ -37,6 +39,10 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        arguments?.getString("username")?.let { username->
+            binding.tv1.text = "Hello $username"
+        }
+
         binding.recyclerViewMovies.layoutManager = LinearLayoutManager(context)
         movieAdapter = MovieAdapter(emptyList()) { movieId ->
             val bundle = Bundle().apply {
@@ -46,27 +52,27 @@ class HomeFragment : Fragment() {
             findNavController().navigate(R.id.action_homeFragment_to_detailFragment, bundle)
         }
         binding.recyclerViewMovies.adapter = movieAdapter
+        observeViewModel()
 
-        fetchAllMovies()
+        binding.btnProfile.setOnClickListener(){
+            findNavController().navigate(R.id.action_homeFragment_to_profileFragment)
+        }
+
     }
 
-    private fun fetchAllMovies(){
-        ApiClient.instance.getMovieNowPlaying().enqueue(object : Callback<MovieResponse> {
-            override fun onResponse(call: Call<MovieResponse>, response: Response<MovieResponse>) {
-                if (response.isSuccessful) {
-                    response.body()?.results?.let { movieList ->
-                        movieAdapter.updateMovies(movieList)
-                    }
-                } else {
-                    Log.e("MovieActivity", "Response code: ${response.code()}")
+    private fun observeViewModel() {
+        viewModel.movieResponse.observe(viewLifecycleOwner) { resources ->
+            when (resources) {
+                null -> {
+                    Toast.makeText(requireContext(), "Failed to load movies", Toast.LENGTH_SHORT).show()
                 }
+                else -> {
+                    movieAdapter.updateMovies(resources.results) // Assuming MovieResponse has a property `results`
                 }
-
-            override fun onFailure(call: Call<MovieResponse>, t: Throwable) {
-                Log.e("HomeFragment", "Failed to fetch movies", t)
             }
-
-        })
+        }
+        viewModel.getMovieNowPlaying()
     }
+
 
 }

@@ -16,9 +16,9 @@ interface ApiService {
     ): Call<MovieResponse>
 
     @GET("movie/{movie_id}")
-    fun getMovieDetail(
+    fun getMovieDetails(
         @Header("Authorization") apikey: String = ApiKey.token,
-        @Path("movie_id") movieId: String
+        @Path("movie_id") movieId: Int
     ): Call<Result>
 
 }
