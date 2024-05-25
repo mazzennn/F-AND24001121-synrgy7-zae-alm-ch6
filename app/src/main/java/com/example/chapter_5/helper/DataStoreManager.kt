@@ -61,6 +61,12 @@ class DataStoreManager private constructor(context: Context) {
             preferences[IS_LOGIN_KEY] = false
         }
     }
+
+    suspend fun loggedInUser() {
+        dataStore.edit { preferences ->
+            preferences[IS_LOGIN_KEY] = true
+        }
+    }
 }
 
 private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "user_pref")

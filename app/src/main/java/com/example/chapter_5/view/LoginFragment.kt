@@ -38,6 +38,7 @@ class LoginFragment : Fragment() {
                     val storedUsername = dataStoreManager.username.first()
                     val storedPassword = dataStoreManager.password.first()
                     if(username == storedUsername && password == storedPassword){
+                        dataStoreManager.loggedInUser()
                         findNavController().navigate(R.id.action_loginFragment_to_homeFragment)
                     }
                 }
