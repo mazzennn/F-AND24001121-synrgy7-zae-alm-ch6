@@ -23,7 +23,7 @@ class LoginFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentLoginBinding.inflate(inflater, container, false)
-        dataStoreManager = DataStoreManager(requireContext())
+        dataStoreManager = DataStoreManager.getInstance(requireContext())
         return binding.root
     }
 
@@ -38,14 +38,13 @@ class LoginFragment : Fragment() {
                     val storedUsername = dataStoreManager.username.first()
                     val storedPassword = dataStoreManager.password.first()
                     if(username == storedUsername && password == storedPassword){
-                        val bundle = Bundle().apply {
-                            putString("username", storedUsername)
-                        }
-
-                        findNavController().navigate(R.id.action_loginFragment_to_homeFragment, bundle)
+                        findNavController().navigate(R.id.action_loginFragment_to_homeFragment)
                     }
                 }
             }
+        }
+        binding.signUpText.setOnClickListener(){
+            findNavController().navigate(R.id.action_loginFragment_to_registerFragment)
         }
     }
 }

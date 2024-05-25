@@ -24,7 +24,7 @@ class RegisterFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentRegisterBinding.inflate(inflater, container, false)
-        dataStoreManager = DataStoreManager(requireContext())
+        dataStoreManager = DataStoreManager.getInstance(requireContext())
         return binding.root
     }
 

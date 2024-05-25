@@ -63,10 +63,10 @@
             />
 
         <TextView
-            android:id="@+id/genre_text"
+            android:id="@+id/populartiy_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Genre"
+            android:text="popularity"
             android:layout_margin="0dp"
             android:textSize="12sp"
             app:layout_constraintTop_toBottomOf="@id/release_text"
@@ -81,7 +81,7 @@
             android:text="Overview"
             android:layout_margin="20dp"
             android:textSize="14sp"
-            app:layout_constraintTop_toBottomOf="@id/genre_text"
+            app:layout_constraintTop_toBottomOf="@id/populartiy_text"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             android:justificationMode="inter_word"

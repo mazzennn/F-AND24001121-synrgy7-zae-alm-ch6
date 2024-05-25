@@ -19,7 +19,7 @@ class MovieViewModelFactory(val remoteDataSource: RemoteDataSource, val pref: Da
             instance ?: synchronized(this) {
                 instance ?: MovieViewModelFactory(
                     RemoteDataSource(ApiClient.instance),
-                    DataStoreManager(context)
+                    DataStoreManager.getInstance(context)
                 )
             }
     }

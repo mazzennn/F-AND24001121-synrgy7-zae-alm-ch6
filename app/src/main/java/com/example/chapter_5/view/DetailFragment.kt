@@ -53,13 +53,14 @@ class DetailFragment : Fragment() {
     private fun bindMovieDetails(movie: Result) {
         val title = movie?.title
         val vote = movie?.voteAverage.toString()
+        val popularity = movie?.popularity.toString()
         val voteCount = movie?.voteCount
         val overview = movie?.overview
         val release = movie?.releaseDate.toString()
         val poster = movie?.posterPath
         binding.titleText.text = title
         binding.releaseText.text = release
-        binding.genreText.text = vote
+        binding.populartiyText.text = popularity
         binding.overviewText.text = overview
 
         val posterUrl = "https://image.tmdb.org/t/p/w500${poster}"
