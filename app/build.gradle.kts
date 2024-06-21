@@ -2,6 +2,7 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("kotlin-kapt")
+    id("com.google.dagger.hilt.android")
 }
 
 android {
@@ -38,7 +39,12 @@ android {
     buildFeatures {
         viewBinding = true
     }
+    kapt {
+        correctErrorTypes = true
+        useBuildCache = true
+    }
 }
+
 
 dependencies {
 
@@ -71,4 +77,19 @@ dependencies {
     implementation("androidx.datastore:datastore-preferences:1.1.1")
     implementation("androidx.datastore:datastore-preferences-core:1.1.1")
 
+    implementation("com.google.dagger:hilt-android:2.50")
+    kapt("com.google.dagger:hilt-android-compiler:2.50")
+//    kapt("androidx.hilt:hilt-compiler:2.44")
+    kapt("androidx.hilt:hilt-compiler:1.0.0")
+    implementation("androidx.hilt:hilt-navigation-compose:1.1.0-alpha01")
+
+    //koin
+    implementation ("io.insert-koin:koin-core:3.2.2")
+    implementation ("io.insert-koin:koin-android:3.5.0")
+    implementation ("io.insert-koin:koin-android-compat:3.3.0")
+    implementation ("io.insert-koin:koin-androidx-workmanager:3.3.0")
+    implementation ("io.insert-koin:koin-androidx-navigation:3.3.0")
+
 }
+
+

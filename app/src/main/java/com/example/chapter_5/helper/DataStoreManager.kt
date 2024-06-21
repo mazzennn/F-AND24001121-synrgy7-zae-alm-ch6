@@ -7,10 +7,14 @@ import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
+import javax.inject.Inject
 
-class DataStoreManager private constructor(context: Context) {
+class DataStoreManager @Inject constructor(
+    @ApplicationContext private val context: Context) {
 
     private val dataStore: DataStore<Preferences> = context.applicationContext.dataStore
 
@@ -31,6 +35,7 @@ class DataStoreManager private constructor(context: Context) {
     private val EMAIL_KEY = stringPreferencesKey("email")
     private val PASSWORD_KEY = stringPreferencesKey("password")
     private val IS_LOGIN_KEY = booleanPreferencesKey("is_login")
+    private val USER_PHOTO_KEY = stringPreferencesKey("user_photo")
 
     val username: Flow<String?> = dataStore.data.map { preferences ->
         preferences[USERNAME_KEY]
@@ -66,6 +71,17 @@ class DataStoreManager private constructor(context: Context) {
         dataStore.edit { preferences ->
             preferences[IS_LOGIN_KEY] = true
         }
+    }
+
+    suspend fun saveUserPhoto(photoPath: String) {
+        dataStore.edit { preferences ->
+            preferences[USER_PHOTO_KEY] = photoPath
+        }
+    }
+
+    suspend fun getUserPhoto(): String? {
+        val preferences = dataStore.data.first()
+        return preferences[USER_PHOTO_KEY]
     }
 }
 

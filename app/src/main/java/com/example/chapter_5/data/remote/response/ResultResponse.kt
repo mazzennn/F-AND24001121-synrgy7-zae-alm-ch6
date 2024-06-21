@@ -1,9 +1,9 @@
-package com.example.chapter_5.model.response
+package com.example.chapter_5.data.remote.response
 
-
+import com.example.chapter_5.domain.model.MovieResult
 import com.google.gson.annotations.SerializedName
 
-data class Result(
+data class ResultResponse(
     @SerializedName("adult")
     val adult: Boolean,
     @SerializedName("backdrop_path")
@@ -33,3 +33,22 @@ data class Result(
     @SerializedName("vote_count")
     val voteCount: Int
 )
+
+fun ResultResponse.toMovieResult(): MovieResult {
+    return MovieResult(
+        adult = adult,
+        backdropPath = backdropPath,
+        genreIds = genreIds ?: emptyList(),
+        id = id,
+        originalLanguage = originalLanguage,
+        originalTitle = originalTitle,
+        overview = overview,
+        popularity = popularity,
+        posterPath = posterPath,
+        releaseDate = releaseDate,
+        title = title,
+        video = video,
+        voteAverage = voteAverage,
+        voteCount = voteCount
+    )
+}

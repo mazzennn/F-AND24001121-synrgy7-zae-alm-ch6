@@ -1,4 +1,4 @@
-package com.example.chapter_5.view
+package com.example.chapter_5.presentation.ui
 
 import android.os.Bundle
 import android.view.LayoutInflater

@@ -1,4 +1,4 @@
-package com.example.chapter_5.model
+package com.example.chapter_5.domain.model
 
 data class UserProfile(
     val username: String,

@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/homeFragment"
-        android:name="com.example.chapter_5.view.HomeFragment"
+        android:name="com.example.chapter_5.presentation.ui.HomeFragment"
         android:label="fragment_home"
         tools:layout="@layout/fragment_home" >
         <action
@@ -19,12 +19,12 @@
     </fragment>
     <fragment
         android:id="@+id/detailFragment"
-        android:name="com.example.chapter_5.view.DetailFragment"
+        android:name="com.example.chapter_5.presentation.ui.DetailFragment"
         android:label="fragment_detail"
         tools:layout="@layout/fragment_detail" />
     <fragment
         android:id="@+id/registerFragment"
-        android:name="com.example.chapter_5.view.RegisterFragment"
+        android:name="com.example.chapter_5.presentation.ui.RegisterFragment"
         android:label="fragment_register"
         tools:layout="@layout/fragment_register" >
         <action
@@ -33,7 +33,7 @@
     </fragment>
     <fragment
         android:id="@+id/loginFragment"
-        android:name="com.example.chapter_5.view.LoginFragment"
+        android:name="com.example.chapter_5.presentation.ui.LoginFragment"
         android:label="fragment_login"
         tools:layout="@layout/fragment_login" >
         <action
@@ -45,7 +45,7 @@
     </fragment>
     <fragment
         android:id="@+id/profileFragment"
-        android:name="com.example.chapter_5.view.ProfileFragment"
+        android:name="com.example.chapter_5.presentation.ui.ProfileFragment"
         android:label="fragment_profile"
         tools:layout="@layout/fragment_profile" />
 </navigation>

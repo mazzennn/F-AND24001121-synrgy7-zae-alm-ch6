@@ -1,6 +1,7 @@
-package com.example.chapter_5.view
+package com.example.chapter_5.presentation.ui
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,24 +13,25 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.chapter_5.R
+import com.example.chapter_5.common.Resource
 import com.example.chapter_5.databinding.FragmentHomeBinding
 import com.example.chapter_5.helper.DataStoreManager
-import com.example.chapter_5.model.MovieAdapter
-import com.example.chapter_5.viewmodel.MovieViewModel
-import com.example.chapter_5.viewmodel.MovieViewModelFactory
+import com.example.chapter_5.presentation.adapter.MovieAdapter
+import com.example.chapter_5.presentation.viewmodel.MovieViewModel
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 
+@AndroidEntryPoint
 class HomeFragment : Fragment() {
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
     private lateinit var dataStoreManager: DataStoreManager
 
     private lateinit var movieAdapter: MovieAdapter
-    private val viewModel: MovieViewModel by viewModels {
-        MovieViewModelFactory.getInstance(requireContext())
-    }
     private lateinit var recyclerView: RecyclerView
+    private val viewModel: MovieViewModel by viewModels()
+//    private lateinit var viewModel: MovieViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -68,18 +70,26 @@ class HomeFragment : Fragment() {
     }
 
     private fun observeViewModel() {
-        viewModel.movieResponse.observe(viewLifecycleOwner) { resources ->
-            when (resources) {
-                null -> {
-                    Toast.makeText(requireContext(), "Failed to load movies", Toast.LENGTH_SHORT).show()
-                }
-                else -> {
-                    movieAdapter.updateMovies(resources.results) // Assuming MovieResponse has a property `results`
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.movieListState.collect { resource ->
+                when (resource) {
+                    is Resource.Success -> {
+                        val movies = resource.data?.results ?: emptyList()
+                        movieAdapter.updateMovies(movies)
+                        Log.d("HomeFragment", "Received ${movies.size} movies")
+                        movieAdapter.updateMovies(movies)
+                    }
+                    is Resource.Error -> {
+                        Toast.makeText(requireContext(), resource.message ?: "Unknown error", Toast.LENGTH_SHORT).show()
+                        Log.d("HomeFragment", "${resource.message}")
+                    }
+                    is Resource.Loading -> {
+                        Log.d("HomeFragment", "Loading...")
+                        // Show loading indicator if needed
+                    }
                 }
             }
         }
-        viewModel.getMovieNowPlaying()
     }
-
 
 }
