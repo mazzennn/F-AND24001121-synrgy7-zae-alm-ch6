@@ -10,11 +10,14 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.chapter_5.R
 import com.example.chapter_5.databinding.FragmentProfileBinding
 import com.example.chapter_5.helper.DataStoreManager
+import com.example.chapter_5.presentation.viewmodel.BlurViewModel
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import java.io.File
@@ -27,6 +30,10 @@ class ProfileFragment : Fragment() {
     private lateinit var dataStoreManager: DataStoreManager
     private var currentPhotoPath: String? = null
 
+    private val blurViewModel: BlurViewModel by viewModels()
+
+    private lateinit var profileImagePath: String
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -38,6 +45,8 @@ class ProfileFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        blurImage()
 
         lifecycleScope.launch {
             val storedUsername = dataStoreManager.username.firstOrNull() ?: ""
@@ -81,7 +90,10 @@ class ProfileFragment : Fragment() {
             getContent.launch("image/*")
         }
 
-
+        currentPhotoPath?.let { path ->
+            val bitmap = BitmapFactory.decodeFile(path)
+            binding.tv1.setImageBitmap(bitmap)
+        }
     }
     private val getContent = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
         uri?.let {
@@ -112,5 +124,27 @@ class ProfileFragment : Fragment() {
 
         // Update ImageView with the new photo
         binding.tv1.setImageBitmap(bitmap)
+    }
+
+    private fun blurImage(){
+        binding.btnApplyBlur.setOnClickListener {
+            val profileImagePath = currentPhotoPath ?: return@setOnClickListener
+            val blurLevel = binding.blurLevel.progress
+            blurViewModel.applyBlur(profileImagePath, blurLevel, requireContext())
+        }
+
+        blurViewModel.blurredImageUri.observe(viewLifecycleOwner, Observer { uri ->
+            uri?.let {
+                binding.tv1.setImageURI(it)
+            }
+        })
+
+        blurViewModel.isBlurring.observe(viewLifecycleOwner, Observer { isBlurring ->
+            if (isBlurring) {
+                Toast.makeText(context, "Blurring image...", Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(context, "Blur complete", Toast.LENGTH_SHORT).show()
+            }
+        })
     }
 }

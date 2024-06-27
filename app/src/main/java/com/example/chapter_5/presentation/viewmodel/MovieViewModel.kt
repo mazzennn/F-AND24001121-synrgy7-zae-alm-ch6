@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.chapter_5.common.Resource
 import com.example.chapter_5.data.remote.response.ResultResponse
 import com.example.chapter_5.domain.model.Movie
+import com.example.chapter_5.domain.model.MovieResult
 import com.example.chapter_5.domain.usecase.MovieUseCase
 import com.example.chapter_5.helper.DataStoreManager
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -24,6 +25,9 @@ class MovieViewModel @Inject constructor(
 
     private val _movieListState: MutableStateFlow<Resource<Movie>> = MutableStateFlow(Resource.Loading())
     val movieListState: StateFlow<Resource<Movie>> = _movieListState
+
+    private val _movieDetailState = MutableLiveData<Resource<MovieResult>>()
+    val movieDetailState: LiveData<Resource<MovieResult>> get() = _movieDetailState
 
     private val _isDataLoaded: MutableStateFlow<Boolean> = MutableStateFlow(false)
     val isDataLoaded: StateFlow<Boolean> = _isDataLoaded
@@ -58,18 +62,12 @@ class MovieViewModel @Inject constructor(
         }
     }
 
-//    fun getMovieDetails(movieId: Int){
-//        viewModelScope.launch {
-//            try {
-//                val response = ApiClient.instance.getMovieDetails(movieId)
-//                // You can handle the movie details response here if needed
-//                // For example, update UI or perform any necessary logic
-//            } catch (e: HttpException) {
-//                // Handle HTTP errors if needed
-//            } catch (e: Exception) {
-//                // Handle other errors if needed
-//            }
-//        }
-//
-//    }
+    fun getMovieDetails(movieId: Int){
+        viewModelScope.launch {
+            movieUseCase.getDetailMovie(movieId).collect(){result->
+                _movieDetailState.value = result
+            }
+        }
+
+    }
 }

@@ -90,6 +90,8 @@ dependencies {
     implementation ("io.insert-koin:koin-androidx-workmanager:3.3.0")
     implementation ("io.insert-koin:koin-androidx-navigation:3.3.0")
 
+    implementation ("androidx.work:work-runtime-ktx:2.9.0")
+
 }
 
 
